@@ -30,7 +30,8 @@ class AirQuality extends Equatable {
     required this.dateTime,
   });
 
-  factory AirQuality.fromJson(Map<String, dynamic> json) => _$AirQualityFromJson(json);
+  factory AirQuality.fromJson(Map<String, dynamic> json) =>
+      _$AirQualityFromJson(json);
   Map<String, dynamic> toJson() => _$AirQualityToJson(this);
 
   factory AirQuality.fromOpenWeatherMapJson(Map<String, dynamic> json) {
@@ -92,5 +93,6 @@ class AirQuality extends Equatable {
   }
 
   @override
-  List<Object?> get props => [aqi, co, no, no2, o3, so2, pm2_5, pm10, nh3, dateTime];
+  List<Object?> get props =>
+      [aqi, co, no, no2, o3, so2, pm2_5, pm10, nh3, dateTime];
 }

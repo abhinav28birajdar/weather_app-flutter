@@ -19,20 +19,16 @@ class AppTheme {
       primaryColor: const Color(0xFF6A82FB),
       scaffoldBackgroundColor: Colors.transparent,
       fontFamily: GoogleFonts.lato().fontFamily,
-
       colorScheme: ColorScheme.dark(
         primary: const Color(0xFF6A82FB),
         onPrimary: Colors.white,
         secondary: const Color(0xFF26D0CE),
         onSecondary: Colors.white,
-        surface: Colors.white.withOpacity(0.15),
+        surface: Colors.transparent,
         onSurface: Colors.white,
-        background: Colors.transparent,
-        onBackground: Colors.white,
         error: const Color(0xFFFF6B6B),
         onError: Colors.white,
       ),
-
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -43,20 +39,45 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.lato(fontSize: 57, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        displayMedium: GoogleFonts.lato(fontSize: 45, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        headlineLarge: GoogleFonts.lato(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        headlineMedium: GoogleFonts.lato(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        titleLarge: GoogleFonts.lato(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        titleMedium: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, shadows: _textShadow),
-        bodyLarge: GoogleFonts.lato(fontSize: 16, color: Colors.white, shadows: _textShadow),
-        bodyMedium: GoogleFonts.lato(fontSize: 14, color: Colors.white70, shadows: _textShadow),
-        labelLarge: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        displayLarge: GoogleFonts.lato(
+            fontSize: 57,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        displayMedium: GoogleFonts.lato(
+            fontSize: 45,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        headlineLarge: GoogleFonts.lato(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        headlineMedium: GoogleFonts.lato(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        titleLarge: GoogleFonts.lato(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        titleMedium: GoogleFonts.lato(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: _textShadow),
+        bodyLarge: GoogleFonts.lato(
+            fontSize: 16, color: Colors.white, shadows: _textShadow),
+        bodyMedium: GoogleFonts.lato(
+            fontSize: 14, color: Colors.white70, shadows: _textShadow),
+        labelLarge: GoogleFonts.lato(
+            fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
         labelSmall: GoogleFonts.lato(fontSize: 11, color: Colors.white54),
       ),
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white.withOpacity(0.15),
@@ -72,14 +93,13 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+          borderSide:
+              BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
         ),
       ),
-
       iconTheme: const IconThemeData(
         color: Colors.white,
       ),
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF6A82FB),
@@ -88,10 +108,10 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          textStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold),
+          textStyle:
+              GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
-
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
@@ -106,15 +126,13 @@ class AppTheme {
           return Colors.white.withOpacity(0.3);
         }),
       ),
-
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white.withOpacity(0.15),
         elevation: 8,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
       ),
-
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
@@ -131,7 +149,6 @@ class AppTheme {
       primaryColor: const Color(0xFF6A82FB),
       scaffoldBackgroundColor: Colors.white,
       fontFamily: GoogleFonts.lato().fontFamily,
-      
       colorScheme: const ColorScheme.light(
         primary: Color(0xFF6A82FB),
         onPrimary: Colors.white,
@@ -139,8 +156,6 @@ class AppTheme {
         onSecondary: Colors.white,
         surface: Colors.white,
         onSurface: Colors.black87,
-        background: Colors.white,
-        onBackground: Colors.black87,
         error: Color(0xFFD32F2F),
         onError: Colors.white,
       ),

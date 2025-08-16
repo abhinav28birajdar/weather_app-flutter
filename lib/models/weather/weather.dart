@@ -47,7 +47,8 @@ class Weather extends Equatable {
     required this.sunset,
   });
 
-  factory Weather.fromJson(Map<String, dynamic> json) => _$WeatherFromJson(json);
+  factory Weather.fromJson(Map<String, dynamic> json) =>
+      _$WeatherFromJson(json);
   Map<String, dynamic> toJson() => _$WeatherToJson(this);
 
   factory Weather.fromOpenWeatherMapJson(Map<String, dynamic> json) {
@@ -69,13 +70,16 @@ class Weather extends Equatable {
       visibility: ((json['visibility'] as num?) ?? 10000).toDouble(),
       cloudiness: (clouds['all'] as num?)?.toInt() ?? 0,
       uvIndex: 0.0, // UV Index not available in current weather API
-      condition: WeatherConditionExtension.fromString(weather['main'] as String),
+      condition:
+          WeatherConditionExtension.fromString(weather['main'] as String),
       description: weather['description'] as String,
       cityName: json['name'] as String,
       country: (sys['country'] as String?) ?? '',
       lastUpdated: DateTime.now(),
-      sunrise: DateTime.fromMillisecondsSinceEpoch((sys['sunrise'] as int? ?? 0) * 1000),
-      sunset: DateTime.fromMillisecondsSinceEpoch((sys['sunset'] as int? ?? 0) * 1000),
+      sunrise: DateTime.fromMillisecondsSinceEpoch(
+          (sys['sunrise'] as int? ?? 0) * 1000),
+      sunset: DateTime.fromMillisecondsSinceEpoch(
+          (sys['sunset'] as int? ?? 0) * 1000),
     );
   }
 
@@ -127,7 +131,24 @@ class Weather extends Equatable {
   }
 
   String get windDirectionText {
-    const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    const directions = [
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW'
+    ];
     final index = (windDirection / 22.5).round() % 16;
     return directions[index];
   }

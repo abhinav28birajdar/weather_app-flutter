@@ -26,7 +26,8 @@ class LocationData extends Equatable {
     this.lastUpdated,
   });
 
-  factory LocationData.fromJson(Map<String, dynamic> json) => _$LocationDataFromJson(json);
+  factory LocationData.fromJson(Map<String, dynamic> json) =>
+      _$LocationDataFromJson(json);
   Map<String, dynamic> toJson() => _$LocationDataToJson(this);
 
   LocationData copyWith({
@@ -52,5 +53,6 @@ class LocationData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [name, lat, lon, country, state, timezone, isFavorite, lastUpdated];
+  List<Object?> get props =>
+      [name, lat, lon, country, state, timezone, isFavorite, lastUpdated];
 }

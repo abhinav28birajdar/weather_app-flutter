@@ -37,7 +37,8 @@ class Forecast extends Equatable {
     this.snowVolume,
   });
 
-  factory Forecast.fromJson(Map<String, dynamic> json) => _$ForecastFromJson(json);
+  factory Forecast.fromJson(Map<String, dynamic> json) =>
+      _$ForecastFromJson(json);
   Map<String, dynamic> toJson() => _$ForecastToJson(this);
 
   factory Forecast.fromOpenWeatherMapJson(Map<String, dynamic> json) {
@@ -53,7 +54,8 @@ class Forecast extends Equatable {
       temperature: (main['temp'] as num).toDouble(),
       tempMin: (main['temp_min'] as num).toDouble(),
       tempMax: (main['temp_max'] as num).toDouble(),
-      condition: WeatherConditionExtension.fromString(weather['main'] as String),
+      condition:
+          WeatherConditionExtension.fromString(weather['main'] as String),
       description: weather['description'] as String,
       humidity: main['humidity'] as int,
       pressure: (main['pressure'] as num).toDouble(),
@@ -115,7 +117,8 @@ class DailyForecast extends Equatable {
     this.hourlyForecasts = const [],
   });
 
-  factory DailyForecast.fromJson(Map<String, dynamic> json) => _$DailyForecastFromJson(json);
+  factory DailyForecast.fromJson(Map<String, dynamic> json) =>
+      _$DailyForecastFromJson(json);
   Map<String, dynamic> toJson() => _$DailyForecastToJson(this);
 
   factory DailyForecast.fromHourlyForecasts(List<Forecast> hourlyForecasts) {
@@ -136,19 +139,36 @@ class DailyForecast extends Equatable {
     // Use the most common condition for the day
     final conditionCounts = <WeatherCondition, int>{};
     for (final forecast in hourlyForecasts) {
-      conditionCounts[forecast.condition] = (conditionCounts[forecast.condition] ?? 0) + 1;
+      conditionCounts[forecast.condition] =
+          (conditionCounts[forecast.condition] ?? 0) + 1;
     }
-    final condition = conditionCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+    final condition =
+        conditionCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
 
     // Average other values
-    final avgHumidity = (hourlyForecasts.map((f) => f.humidity).reduce((a, b) => a + b) / hourlyForecasts.length).round();
-    final avgPressure = hourlyForecasts.map((f) => f.pressure).reduce((a, b) => a + b) / hourlyForecasts.length;
-    final avgWindSpeed = hourlyForecasts.map((f) => f.windSpeed).reduce((a, b) => a + b) / hourlyForecasts.length;
-    final avgWindDirection = (hourlyForecasts.map((f) => f.windDirection).reduce((a, b) => a + b) / hourlyForecasts.length).round();
-    final avgCloudiness = (hourlyForecasts.map((f) => f.cloudiness).reduce((a, b) => a + b) / hourlyForecasts.length).round();
+    final avgHumidity =
+        (hourlyForecasts.map((f) => f.humidity).reduce((a, b) => a + b) /
+                hourlyForecasts.length)
+            .round();
+    final avgPressure =
+        hourlyForecasts.map((f) => f.pressure).reduce((a, b) => a + b) /
+            hourlyForecasts.length;
+    final avgWindSpeed =
+        hourlyForecasts.map((f) => f.windSpeed).reduce((a, b) => a + b) /
+            hourlyForecasts.length;
+    final avgWindDirection =
+        (hourlyForecasts.map((f) => f.windDirection).reduce((a, b) => a + b) /
+                hourlyForecasts.length)
+            .round();
+    final avgCloudiness =
+        (hourlyForecasts.map((f) => f.cloudiness).reduce((a, b) => a + b) /
+                hourlyForecasts.length)
+            .round();
 
-    final totalRain = hourlyForecasts.map((f) => f.rainVolume ?? 0.0).reduce((a, b) => a + b);
-    final totalSnow = hourlyForecasts.map((f) => f.snowVolume ?? 0.0).reduce((a, b) => a + b);
+    final totalRain =
+        hourlyForecasts.map((f) => f.rainVolume ?? 0.0).reduce((a, b) => a + b);
+    final totalSnow =
+        hourlyForecasts.map((f) => f.snowVolume ?? 0.0).reduce((a, b) => a + b);
 
     return DailyForecast(
       date: date,

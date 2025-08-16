@@ -1,5 +1,4 @@
 // lib/models/weather/weather_condition.dart
-import 'package:equatable/equatable.dart';
 
 enum WeatherCondition {
   clear,
@@ -68,9 +67,9 @@ extension WeatherConditionExtension on WeatherCondition {
       case WeatherCondition.drizzle:
         return 'assets/rain.json';
       case WeatherCondition.snow:
-        return 'assets/snow.json';
+        return 'assets/cloud.json'; // Using cloud for now since no snow asset
       case WeatherCondition.thunderstorm:
-        return 'assets/storm.json';
+        return 'assets/light.json'; // Using light for thunderstorm
       default:
         return 'assets/cloud.json';
     }

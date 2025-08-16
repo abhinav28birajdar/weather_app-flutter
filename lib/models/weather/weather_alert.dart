@@ -32,7 +32,8 @@ class WeatherAlert extends Equatable {
     required this.severity,
   });
 
-  factory WeatherAlert.fromJson(Map<String, dynamic> json) => _$WeatherAlertFromJson(json);
+  factory WeatherAlert.fromJson(Map<String, dynamic> json) =>
+      _$WeatherAlertFromJson(json);
   Map<String, dynamic> toJson() => _$WeatherAlertToJson(this);
 
   factory WeatherAlert.fromOpenWeatherMapJson(Map<String, dynamic> json) {
@@ -49,7 +50,7 @@ class WeatherAlert extends Equatable {
 
   static AlertSeverity _parseSeverity(List? tags) {
     if (tags == null) return AlertSeverity.unknown;
-    
+
     for (final tag in tags) {
       final tagStr = tag.toString().toLowerCase();
       if (tagStr.contains('extreme')) return AlertSeverity.extreme;
@@ -57,7 +58,7 @@ class WeatherAlert extends Equatable {
       if (tagStr.contains('moderate')) return AlertSeverity.moderate;
       if (tagStr.contains('minor')) return AlertSeverity.minor;
     }
-    
+
     return AlertSeverity.unknown;
   }
 
@@ -99,5 +100,6 @@ class WeatherAlert extends Equatable {
   Duration get duration => end.difference(start);
 
   @override
-  List<Object?> get props => [senderName, event, start, end, description, tags, severity];
+  List<Object?> get props =>
+      [senderName, event, start, end, description, tags, severity];
 }

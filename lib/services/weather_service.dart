@@ -1,5 +1,6 @@
 // lib/services/weather_service.dart
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import '../config/api_keys.dart';
@@ -16,34 +17,69 @@ class WeatherService {
 
   // Get current weather by coordinates
   Future<Weather> getCurrentWeather(double lat, double lon) async {
-    final url = '$_baseUrl/weather?lat=$lat&lon=$lon&appid=$_apiKey&units=metric';
-    
+    final url =
+        '$_baseUrl/weather?lat=$lat&lon=$lon&appid=$_apiKey&units=metric';
+
     try {
+      debugPrint('API Key being used: $_apiKey');
+      debugPrint('Fetching weather data for coordinates: lat=$lat, lon=$lon');
       final response = await http.get(Uri.parse(url));
-      
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return Weather.fromOpenWeatherMapJson(json);
+
+        // Check for API error responses
+        if (json['cod'] != null && json['cod'].toString() != '200') {
+          final error = json['message'] as String? ?? 'Unknown API error';
+          debugPrint('API Error: $error');
+          throw WeatherException('API Error: $error');
+        }
+
+        try {
+          return Weather.fromOpenWeatherMapJson(json);
+        } catch (e, stackTrace) {
+          debugPrint('Error parsing weather data: $e');
+          debugPrint('Stack trace: $stackTrace');
+          throw WeatherException('Error parsing weather data: $e');
+        }
       } else {
-        throw WeatherException('Failed to load weather data: ${response.statusCode}');
+        String errorMessage;
+        try {
+          final errorJson = jsonDecode(response.body) as Map<String, dynamic>;
+          errorMessage = errorJson['message'] as String? ??
+              'HTTP Error: ${response.statusCode}';
+        } catch (e) {
+          errorMessage = 'HTTP Error: ${response.statusCode}';
+        }
+        debugPrint('Error response: $errorMessage');
+        throw WeatherException(errorMessage);
       }
-    } catch (e) {
-      throw WeatherException('Error fetching weather: $e');
+    } catch (e, stackTrace) {
+      if (e is WeatherException) {
+        debugPrint('WeatherException: ${e.message}');
+        rethrow;
+      }
+      debugPrint('Unexpected error: $e');
+      debugPrint('Stack trace: $stackTrace');
+      throw WeatherException('Failed to fetch weather data: $e');
     }
   }
 
   // Get current weather by city name
   Future<Weather> getCurrentWeatherByCity(String cityName) async {
     final url = '$_baseUrl/weather?q=$cityName&appid=$_apiKey&units=metric';
-    
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         return Weather.fromOpenWeatherMapJson(json);
       } else {
-        throw WeatherException('Failed to load weather data: ${response.statusCode}');
+        throw WeatherException(
+            'Failed to load weather data: ${response.statusCode}');
       }
     } catch (e) {
       throw WeatherException('Error fetching weather: $e');
@@ -52,20 +88,23 @@ class WeatherService {
 
   // Get 5-day forecast (3-hour intervals)
   Future<List<Forecast>> getForecast(double lat, double lon) async {
-    final url = '$_baseUrl/forecast?lat=$lat&lon=$lon&appid=$_apiKey&units=metric';
-    
+    final url =
+        '$_baseUrl/forecast?lat=$lat&lon=$lon&appid=$_apiKey&units=metric';
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         final list = json['list'] as List;
-        
+
         return list
-            .map((item) => Forecast.fromOpenWeatherMapJson(item as Map<String, dynamic>))
+            .map((item) =>
+                Forecast.fromOpenWeatherMapJson(item as Map<String, dynamic>))
             .toList();
       } else {
-        throw WeatherException('Failed to load forecast data: ${response.statusCode}');
+        throw WeatherException(
+            'Failed to load forecast data: ${response.statusCode}');
       }
     } catch (e) {
       throw WeatherException('Error fetching forecast: $e');
@@ -75,16 +114,17 @@ class WeatherService {
   // Get daily forecasts from hourly data
   Future<List<DailyForecast>> getDailyForecast(double lat, double lon) async {
     final hourlyForecasts = await getForecast(lat, lon);
-    
+
     // Group forecasts by day
     final Map<String, List<Forecast>> groupedByDay = {};
-    
+
     for (final forecast in hourlyForecasts) {
-      final dateKey = '${forecast.dateTime.year}-${forecast.dateTime.month}-${forecast.dateTime.day}';
+      final dateKey =
+          '${forecast.dateTime.year}-${forecast.dateTime.month}-${forecast.dateTime.day}';
       groupedByDay[dateKey] ??= [];
       groupedByDay[dateKey]!.add(forecast);
     }
-    
+
     // Create daily forecasts
     final dailyForecasts = <DailyForecast>[];
     for (final dayForecasts in groupedByDay.values) {
@@ -92,22 +132,23 @@ class WeatherService {
         dailyForecasts.add(DailyForecast.fromHourlyForecasts(dayForecasts));
       }
     }
-    
+
     return dailyForecasts;
   }
 
   // Get air quality data
   Future<AirQuality> getAirQuality(double lat, double lon) async {
     final url = '$_baseUrl/air_pollution?lat=$lat&lon=$lon&appid=$_apiKey';
-    
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         return AirQuality.fromOpenWeatherMapJson(json);
       } else {
-        throw WeatherException('Failed to load air quality data: ${response.statusCode}');
+        throw WeatherException(
+            'Failed to load air quality data: ${response.statusCode}');
       }
     } catch (e) {
       throw WeatherException('Error fetching air quality: $e');
@@ -117,21 +158,23 @@ class WeatherService {
   // Get weather alerts (using One Call API)
   Future<List<WeatherAlert>> getWeatherAlerts(double lat, double lon) async {
     // Note: This requires the One Call API which may require a different subscription
-    final url = '$_baseUrl/onecall?lat=$lat&lon=$lon&appid=$_apiKey&exclude=minutely';
-    
+    final url =
+        '$_baseUrl/onecall?lat=$lat&lon=$lon&appid=$_apiKey&exclude=minutely';
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         final alerts = json['alerts'] as List?;
-        
+
         if (alerts != null) {
           return alerts
-              .map((alert) => WeatherAlert.fromOpenWeatherMapJson(alert as Map<String, dynamic>))
+              .map((alert) => WeatherAlert.fromOpenWeatherMapJson(
+                  alert as Map<String, dynamic>))
               .toList();
         }
-        
+
         return [];
       } else {
         // If One Call API is not available, return empty list
@@ -139,7 +182,7 @@ class WeatherService {
       }
     } catch (e) {
       // Log error but don't throw since alerts are optional
-      print('Warning: Could not fetch weather alerts: $e');
+      debugPrint('Warning: Could not fetch weather alerts: $e');
       return [];
     }
   }
@@ -147,13 +190,13 @@ class WeatherService {
   // Search for locations
   Future<List<LocationData>> searchLocations(String query) async {
     final url = '$_geoUrl/direct?q=$query&limit=5&appid=$_apiKey';
-    
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final list = jsonDecode(response.body) as List;
-        
+
         return list.map((item) {
           final json = item as Map<String, dynamic>;
           return LocationData(
@@ -165,7 +208,8 @@ class WeatherService {
           );
         }).toList();
       } else {
-        throw WeatherException('Failed to search locations: ${response.statusCode}');
+        throw WeatherException(
+            'Failed to search locations: ${response.statusCode}');
       }
     } catch (e) {
       throw WeatherException('Error searching locations: $e');
@@ -175,13 +219,13 @@ class WeatherService {
   // Get location data by coordinates (reverse geocoding)
   Future<LocationData> getLocationByCoordinates(double lat, double lon) async {
     final url = '$_geoUrl/reverse?lat=$lat&lon=$lon&limit=1&appid=$_apiKey';
-    
+
     try {
       final response = await http.get(Uri.parse(url));
-      
+
       if (response.statusCode == 200) {
         final list = jsonDecode(response.body) as List;
-        
+
         if (list.isNotEmpty) {
           final json = list.first as Map<String, dynamic>;
           return LocationData(
@@ -195,7 +239,8 @@ class WeatherService {
           throw WeatherException('No location found for coordinates');
         }
       } else {
-        throw WeatherException('Failed to get location: ${response.statusCode}');
+        throw WeatherException(
+            'Failed to get location: ${response.statusCode}');
       }
     } catch (e) {
       throw WeatherException('Error getting location: $e');
@@ -228,19 +273,22 @@ class WeatherService {
 
     // Get current position
     final position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
     );
 
     // Get location name using reverse geocoding
-    return await getLocationByCoordinates(position.latitude, position.longitude);
+    return await getLocationByCoordinates(
+        position.latitude, position.longitude);
   }
 }
 
 class WeatherException implements Exception {
   final String message;
-  
+
   WeatherException(this.message);
-  
+
   @override
   String toString() => 'WeatherException: $message';
 }
